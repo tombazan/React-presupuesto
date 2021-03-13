@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import Error from './Error';
-import shortid from 'shortId';
+const shortid = require('shortid');
 
 const Formulario = ({agregarNuevoGasto}) => {
 
