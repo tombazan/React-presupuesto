@@ -4,7 +4,10 @@ import Formulario from './components/Formulario';
 import Listado from './components/Listado';
 import ControlPresupuesto from './components/ControlPresupuesto';
 
+
 function App() {
+  //localStorage
+  
 
   //Definir el state
   const [presupuesto, guardarPresupuesto] = useState(0);
@@ -13,6 +16,7 @@ function App() {
   const [gastos, guardarGastos] = useState([]);
   const [ gasto, guardarGasto ] = useState({});
   const [creargasto, guardarCrearGasto] = useState(false);
+  
 
   //useEffect que actualiza el restante
   useEffect(() => {
@@ -25,18 +29,33 @@ function App() {
 
       //Resta del presupuesto actual
       const presupuestoRestante = restante - gasto.cantidad;
-      guardarRestante(presupuestoRestante);
+
+      guardarRestante(JSON.parse(presupuestoRestante));
       //Resetear a false
       guardarCrearGasto(false);
+
     }
-  }, [gasto, creargasto, restante, gastos]);
+  }, [gasto, creargasto, gastos, restante]);
+
+  //Eliminar el gasto
+  const eliminarGasto = gastoBorrar => {
+    //Eliminar el Gasto
+    const gastoEliminado = gastos.filter(gasto => gasto.id !== gastoBorrar.id);
+    guardarGastos(gastoEliminado);
+
+    //Actualizar el restante
+    const actualizarRestante = restante + gastoBorrar.cantidad;
+    guardarRestante(JSON.parse(actualizarRestante));
+  }
+
 
   return (
     <div className="container">
       <header>
-        <h1>Gasto Semanal</h1>
+        <h1>Gasto Mensual</h1>
 
         <div className="contenido-principal contenido">
+
           {mostrarpregunta ? (
             <Pregunta
               guardarPresupuesto={guardarPresupuesto}
@@ -46,6 +65,7 @@ function App() {
             ) : (
               <div className="row">
                 <div className="one-half column">
+                
                   <Formulario 
                     guardarGasto={guardarGasto}
                     guardarCrearGasto={guardarCrearGasto}
@@ -55,6 +75,7 @@ function App() {
                 <div className="one-half column">
                   <Listado
                     gastos={gastos}
+                    eliminarGasto={eliminarGasto}
                   />
 
                   <ControlPresupuesto
